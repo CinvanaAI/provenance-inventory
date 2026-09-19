@@ -1,0 +1,16 @@
+{
+  "version": 1,
+  "sources": [
+    {
+      "id": "archive-main",
+      "label": "Primary archive",
+      "path": "D:\\archives\\sample-source",
+      "include_hidden": true,
+      "exclude_globs": [
+        "Thumbs.db",
+        "desktop.ini",
+        ".DS_Store"
+      ]
+    }
+  ]
+}

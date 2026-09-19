@@ -1,0 +1,12 @@
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.venv/
+venv/
+build/
+dist/
+wheelhouse/
+*.egg-info/
+data/
+inventory-output/
+sources.json

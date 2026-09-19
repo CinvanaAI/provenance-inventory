@@ -1,0 +1,36 @@
+{
+  "source_unchanged": true,
+  "files": {
+    "copy.txt": "d137d7338abb45f5c4ddbb49a04e8bbce54054add05622655a27c9684c645e35",
+    "one.txt": "d137d7338abb45f5c4ddbb49a04e8bbce54054add05622655a27c9684c645e35",
+    "pyproject.toml": "cf837afc3ffc8810781328700db8a5fc60ff2242e33fb909a94c5df3e46221cf"
+  },
+  "summary": {
+    "status": "complete",
+    "file_count": 3,
+    "project_marker_count": 1,
+    "duplicate_group_count": 1,
+    "duplicate_file_count": 2,
+    "error_count": 0
+  },
+  "manifest_fields": [
+    "birth_time_ns",
+    "created_or_changed_time_ns",
+    "extension",
+    "hash_status",
+    "is_project_marker",
+    "media_kind",
+    "mime_hint",
+    "modified_time_ns",
+    "name",
+    "original_path",
+    "relative_path",
+    "run_id",
+    "scanner_version",
+    "schema_version",
+    "sha256",
+    "size_bytes",
+    "source_id",
+    "source_label"
+  ]
+}

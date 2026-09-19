@@ -1,0 +1,21 @@
+[build-system]
+requires = ["setuptools>=69", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "provenance-inventory"
+version = "0.1.0"
+description = "Read-only, allowlisted file census with full SHA-256 provenance and duplicate evidence."
+readme = "README.md"
+requires-python = ">=3.11"
+license = {file = "LICENSE.md"}
+authors = [{name = "Cinvana Lab"}]
+
+[project.scripts]
+provenance-inventory = "provenance_inventory.inventory:main"
+
+[tool.setuptools.packages.find]
+include = ["provenance_inventory*"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
