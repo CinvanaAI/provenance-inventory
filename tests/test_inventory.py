@@ -9,6 +9,30 @@ from provenance_inventory.inventory import InventoryError, PROJECT_ROOT, scan
 
 
 class InventoryTests(unittest.TestCase):
+    def test_rejects_non_object_config_before_creating_output(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            config = root / "sources.json"
+            for payload in ([], False, None, "sources"):
+                config.write_text(json.dumps(payload), encoding="utf-8")
+                with self.assertRaisesRegex(InventoryError, "version 1"):
+                    scan(config, root / "out")
+                self.assertFalse((root / "out").exists())
+
+    def test_hidden_policy_requires_a_json_boolean(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            source = root / "source"
+            source.mkdir()
+            config = self.write_config(root, source)
+            payload = json.loads(config.read_text())
+            for policy in ("false", 0, None, []):
+                payload["sources"][0]["include_hidden"] = policy
+                config.write_text(json.dumps(payload), encoding="utf-8")
+                with self.assertRaisesRegex(InventoryError, "must be a boolean"):
+                    scan(config, root / "out")
+                self.assertFalse((root / "out").exists())
+
     def write_config(self, folder: Path, source: Path) -> Path:
         config = folder / "sources.json"
         config.write_text(
@@ -31,9 +55,9 @@ class InventoryTests(unittest.TestCase):
         return config
 
     def local_output(self) -> Path:
-        output = PROJECT_ROOT / "data" / f"test-inventory-{uuid.uuid4().hex}"
-        self.addCleanup(shutil.rmtree, output, True)
-        return output
+        temporary = tempfile.TemporaryDirectory(prefix="inventory-test-")
+        self.addCleanup(temporary.cleanup)
+        return Path(temporary.name) / "output"
 
     def test_inventory_is_read_only_and_groups_exact_duplicates(self):
         with tempfile.TemporaryDirectory() as temporary:

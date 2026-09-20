@@ -124,7 +124,7 @@ def load_sources(config_path: Path) -> tuple[list[Source], str]:
     except json.JSONDecodeError as exc:
         raise InventoryError(f"Invalid JSON in {config_path}: {exc}") from exc
 
-    if payload.get("version") != 1 or not isinstance(payload.get("sources"), list):
+    if not isinstance(payload, dict) or payload.get("version") != 1 or not isinstance(payload.get("sources"), list):
         raise InventoryError("Source config must have version 1 and a sources list.")
     if not payload["sources"]:
         raise InventoryError("Source config contains no sources.")
@@ -160,6 +160,9 @@ def load_sources(config_path: Path) -> tuple[list[Source], str]:
             )
 
         exclude_globs = item.get("exclude_globs", [])
+        include_hidden = item.get("include_hidden", True)
+        if not isinstance(include_hidden, bool):
+            raise InventoryError(f"include_hidden for {source_id} must be a boolean.")
         if not isinstance(exclude_globs, list) or not all(
             isinstance(value, str) for value in exclude_globs
         ):
@@ -172,7 +175,7 @@ def load_sources(config_path: Path) -> tuple[list[Source], str]:
                 source_id=source_id,
                 label=label,
                 path=path,
-                include_hidden=bool(item.get("include_hidden", True)),
+                include_hidden=include_hidden,
                 exclude_globs=tuple(exclude_globs),
             )
         )

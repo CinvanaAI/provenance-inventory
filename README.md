@@ -1,7 +1,5 @@
 # Provenance Inventory
 
-Find out what an archive contains before deciding what to move or deduplicate.
-
 Establish what files exist and which are byte-identical before deciding how to migrate, deduplicate, or index an archive.
 
 ## See it work

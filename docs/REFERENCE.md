@@ -68,3 +68,32 @@ python -m pip wheel . --no-deps --no-build-isolation --no-cache-dir -w dist
 The synthetic tests verify source immutability, full-hash duplicate grouping, project markers, output containment, code-root protection, hidden/exclude policies, and indirection skipping.
 
 See [ORIGIN.md](../ORIGIN.md) and [SECURITY.md](../SECURITY.md).
+
+## Read one run before making a decision
+
+Run `python -m examples.walkthrough` for the disposable three-file example.
+`one.txt` and `copy.txt` have equal SHA-256 hashes; `pyproject.toml` is the project
+marker. The example compares all source hashes before and after scanning. It
+proves read-only behavior for these files, not a filesystem snapshot guarantee.
+
+For your own run, follow `latest.json` to its `summary.json`, then inspect:
+
+| Evidence | Meaning | Decision it cannot make |
+| --- | --- | --- |
+| `manifest.jsonl` | One readable file, its full hash and source-relative identity per line | Whether a file is useful or disposable |
+| `duplicates.json` | Groups sharing an identical full content hash | Which copy to retain, or whether metadata/links matter |
+| `errors.jsonl` | Files or traversals that could not supply reliable evidence | Whether the unrecorded content is a duplicate |
+| `summary.json` | Counts and completion time for that scan | Whether every source was successfully read |
+
+`status: complete` means the scan finished; check `error_count` before treating
+its census as complete evidence. A missing file can be excluded, hidden, an
+indirection, or an error. Size and modification-time checks catch ordinary edits
+during hashing; this is not a locked snapshot against concurrent or adversarial
+rewrites. Stop writers or use an independently created snapshot when stronger
+consistency is needed.
+
+Set `include_hidden` to the JSON boolean `false` to omit dot-prefixed path
+components. Strings such as `"false"` are rejected instead of interpreted as true.
+This setting concerns dot names, not the Windows hidden attribute. Exclude globs
+match file names or source-relative paths; an excluded directory is not entered.
+Keep every real manifest private until its names and paths have been reviewed.
